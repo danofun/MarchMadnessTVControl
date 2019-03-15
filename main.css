@@ -1,0 +1,119 @@
+body, html {
+     height: 100%;
+     -webkit-user-select: none;
+     -moz-user-select: none;
+     -ms-user-select: none;
+     -webkit-tap-highlight-color: transparent;
+     -webkit-touch-callout: none;
+     -webkit-text-size-adjust: none;
+     -ms-text-size-adjust: none;
+     overflow: hidden;
+     touch-action: manipulation;
+}
+ .bg {
+    /* The image used */
+     background-image: url("assets/img/background.jpg");
+    /* Full height */
+     height: 100%;
+    /* Center and scale the image nicely */
+     background-position: center;
+     background-repeat: no-repeat;
+     background-size: cover;
+}
+/* Container options */
+ #ContainerTop {
+     padding: 20px;
+}
+ #ContainerBottom {
+     padding-top: 45px;
+     padding-left: 26px;
+     padding-right: 26px;
+     padding-bottom: 20px;
+}
+ .col-lg-6 {
+     padding-left:26px;
+     padding-right:26px;
+}
+ #UpcomingGamesTitle {
+     margin-top:-18px;
+     margin-bottom: -20px;
+     padding-left: 80px;
+     color: black;
+}
+/* Table options */
+ .table #TLlisten, .table #TRlisten, .table #BLlisten {
+     padding: 7px;
+     border-style: solid;
+     border-color: transparent;
+     border-width: 7px;
+     background-color: black;
+}
+ .table #TLlistenselect, .table #TRlistenselect, .table #BLlistenselect {
+     background-color: #237A39;
+     opacity: 0.4;
+}
+ .table thead th:nth-child(1) {
+     width: 20%;
+     height: 70px;
+     padding-top: 5px;
+     padding-bottom: 5px;
+}
+ .table thead th:nth-child(2) {
+     width: 80%;
+     height: 70px;
+     padding-top: 5px;
+     padding-bottom: 5px;
+}
+ .table thead tr #hidelistenbar {
+     height: 25px;
+     background-color: transparent;
+     z-index: -1;
+}
+ .table thead th img {
+     width: 63px;
+     opacity: 0.4;
+}
+ .table #BRepg {
+     background-color: transparent;
+     color: black;
+}
+ .table #BRepg img {
+     width: 63px;
+     opacity: 1.0;
+     filter: invert(100%);
+}
+/* Image options */
+ #MuteAll {
+     position: absolute;
+     left: 50%;
+     top: 362px;
+     z-index: 65;
+     transform: translate(-50%, -50%);
+     width:167px;
+}
+ #MuteAllOutline {
+     position: absolute;
+     left: 50%;
+     top: 362px;
+     z-index: 64;
+     transform: translate(-50%, -50%);
+     width:176px 
+}
+ #VolumeDown {
+     position: absolute;
+     left: 5%;
+     top: 375px;
+     z-index: 55;
+     transform: translate(-50%, -50%);
+     width:40px;
+     opacity: 0.4;
+}
+ #VolumeUp {
+     position: absolute;
+     left: 95%;
+     top: 375px;
+     z-index: 54;
+     transform: translate(-50%, -50%);
+     width:40px;
+     opacity: 0.4;
+}
