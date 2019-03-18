@@ -8,9 +8,8 @@
     <meta content="black" name="apple-mobile-web-app-status-bar-style">
     <meta content="March Madness" name="apple-mobile-web-app-title">
     <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon" sizes="128x128">
+    <link rel="apple-touch-startup-image" href="assets/img/ipad_splash.png">
     <link href="assets/img/favicon.ico" rel="icon">
-    <!-- iPad Mini, Air Splashscreen (1536px x 2048px) -->
-    <link href="assets/img/ipad_splash.png" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
     <title>March Madness</title>
     <!-- Latest compiled and minified Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
@@ -159,9 +158,9 @@
     <script>
         <!-- VARIABLES  -->
         <!-- Kodi IP addresses  -->
-        var KodiTL = '10.0.14.131';
-        var KodiTR = '10.0.14.133';
-        var KodiBL = '10.0.14.9';
+        var KodiTL = '10.0.64.10';
+        var KodiTR = '10.0.64.11';
+        var KodiBL = '10.0.64.12';
 
         <!-- Kodi PVR Channels -->
         var PVRch1 = "CBS";
@@ -282,8 +281,16 @@
                             <!-- send the results to the specified table row -->
                             document.getElementById("TLch1nowimg").src = results.result.channeldetails.icon;
                             document.getElementById("TLch1nextimg").src = results.result.channeldetails.icon;
-                            document.getElementById("TLch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
-                            document.getElementById("TLch1nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.title;
+                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("TLch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
+                            } else {
+                                document.getElementById("TLch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            }
+                            if (results.result.channeldetails.broadcastnext.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("TLch1nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.episodename;
+                            } else {
+                                document.getElementById("TLch1nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.title;
+                            }
                             websocketTL.send(JSON.stringify({
                                 "jsonrpc": "2.0",
                                 "method": "PVR.GetChannelDetails",
@@ -305,8 +312,16 @@
                             var localizetimenext = datetimeparsenext.setZone("local");
                             document.getElementById("TLch2nowimg").src = results.result.channeldetails.icon;
                             document.getElementById("TLch2nextimg").src = results.result.channeldetails.icon;
-                            document.getElementById("TLch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
-                            document.getElementById("TLch2nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.title;
+                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("TLch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
+                            } else {
+                                document.getElementById("TLch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            }
+                            if (results.result.channeldetails.broadcastnext.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("TLch2nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.episodename;
+                            } else {
+                                document.getElementById("TLch2nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.title;
+                            }
                             websocketTL.send(JSON.stringify({
                                 "jsonrpc": "2.0",
                                 "method": "PVR.GetChannelDetails",
@@ -328,8 +343,16 @@
                             var localizetimenext = datetimeparsenext.setZone("local");
                             document.getElementById("TLch3nowimg").src = results.result.channeldetails.icon;
                             document.getElementById("TLch3nextimg").src = results.result.channeldetails.icon;
-                            document.getElementById("TLch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
-                            document.getElementById("TLch3nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.title;
+                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("TLch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
+                            } else {
+                                document.getElementById("TLch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            }
+                            if (results.result.channeldetails.broadcastnext.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("TLch3nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.episodename;
+                            } else {
+                                document.getElementById("TLch3nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.title;
+                            }
                             websocketTL.send(JSON.stringify({
                                 "jsonrpc": "2.0",
                                 "method": "PVR.GetChannelDetails",
@@ -351,8 +374,16 @@
                             var localizetimenext = datetimeparsenext.setZone("local");
                             document.getElementById("TLch4nowimg").src = results.result.channeldetails.icon;
                             document.getElementById("TLch4nextimg").src = results.result.channeldetails.icon;
-                            document.getElementById("TLch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
-                            document.getElementById("TLch4nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.title;
+                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("TLch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
+                            } else {
+                                document.getElementById("TLch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            }
+                            if (results.result.channeldetails.broadcastnext.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("TLch4nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.episodename;
+                            } else {
+                                document.getElementById("TLch4nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.title;
+                            }
                             <!-- request volume information -->
                             websocketTL.send(JSON.stringify({
                                 "jsonrpc": "2.0",
@@ -557,7 +588,11 @@
                             var localizetime = datetimeparse.setZone("local");
                             <!-- send the results to the specified table row -->
                             document.getElementById("TRch1nowimg").src = results.result.channeldetails.icon;
-                            document.getElementById("TRch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("TRch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
+                            } else {
+                                document.getElementById("TRch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            }
                             websocketTR.send(JSON.stringify({
                                 "jsonrpc": "2.0",
                                 "method": "PVR.GetChannelDetails",
@@ -574,7 +609,11 @@
                             });
                             var localizetime = datetimeparse.setZone("local");
                             document.getElementById("TRch2nowimg").src = results.result.channeldetails.icon;
-                            document.getElementById("TRch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("TRch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
+                            } else {
+                                document.getElementById("TRch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            }
                             websocketTR.send(JSON.stringify({
                                 "jsonrpc": "2.0",
                                 "method": "PVR.GetChannelDetails",
@@ -591,7 +630,11 @@
                             });
                             var localizetime = datetimeparse.setZone("local");
                             document.getElementById("TRch3nowimg").src = results.result.channeldetails.icon;
-                            document.getElementById("TRch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("TRch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
+                            } else {
+                                document.getElementById("TRch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            }
                             websocketTR.send(JSON.stringify({
                                 "jsonrpc": "2.0",
                                 "method": "PVR.GetChannelDetails",
@@ -608,7 +651,11 @@
                             });
                             var localizetime = datetimeparse.setZone("local");
                             document.getElementById("TRch4nowimg").src = results.result.channeldetails.icon;
-                            document.getElementById("TRch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("TRch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
+                            } else {
+                                document.getElementById("TRch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            }
                             <!-- request volume information -->
                             websocketTR.send(JSON.stringify({
                                 "jsonrpc": "2.0",
@@ -814,7 +861,11 @@
                             var localizetime = datetimeparse.setZone("local");
                             <!-- send the results to the specified table row -->
                             document.getElementById("BLch1nowimg").src = results.result.channeldetails.icon;
-                            document.getElementById("BLch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("BLch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
+                            } else {
+                                document.getElementById("BLch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            }
                             websocketBL.send(JSON.stringify({
                                 "jsonrpc": "2.0",
                                 "method": "PVR.GetChannelDetails",
@@ -831,7 +882,11 @@
                             });
                             var localizetime = datetimeparse.setZone("local");
                             document.getElementById("BLch2nowimg").src = results.result.channeldetails.icon;
-                            document.getElementById("BLch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("BLch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
+                            } else {
+                                document.getElementById("BLch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            }
                             websocketBL.send(JSON.stringify({
                                 "jsonrpc": "2.0",
                                 "method": "PVR.GetChannelDetails",
@@ -848,7 +903,11 @@
                             });
                             var localizetime = datetimeparse.setZone("local");
                             document.getElementById("BLch3nowimg").src = results.result.channeldetails.icon;
-                            document.getElementById("BLch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("BLch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
+                            } else {
+                                document.getElementById("BLch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            }
                             websocketBL.send(JSON.stringify({
                                 "jsonrpc": "2.0",
                                 "method": "PVR.GetChannelDetails",
@@ -865,7 +924,11 @@
                             });
                             var localizetime = datetimeparse.setZone("local");
                             document.getElementById("BLch4nowimg").src = results.result.channeldetails.icon;
-                            document.getElementById("BLch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("BLch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
+                            } else {
+                                document.getElementById("BLch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            }
                             <!-- request volume information -->
                             websocketBL.send(JSON.stringify({
                                 "jsonrpc": "2.0",
@@ -1985,33 +2048,34 @@
         function Autoupdate() {
             websocketTL.send(JSON.stringify({
                 "jsonrpc": "2.0",
-                "method": "Player.GetItem",
+                "method": "PVR.GetChannels",
                 "params": {
-                    "properties": ["title"],
-                    "playerid": 1
+                    "channelgroupid": "alltv"
                 },
-                "id": "Player.GetChannelTL"
+                "id": "PVR.GetChannelsTL"
             }));
             websocketTR.send(JSON.stringify({
                 "jsonrpc": "2.0",
-                "method": "Player.GetItem",
+                "method": "PVR.GetChannels",
                 "params": {
-                    "properties": ["title"],
-                    "playerid": 1
+                    "channelgroupid": "alltv"
                 },
-                "id": "Player.GetChannelTR"
+                "id": "PVR.GetChannelsTR"
             }));
             websocketBL.send(JSON.stringify({
                 "jsonrpc": "2.0",
-                "method": "Player.GetItem",
+                "method": "PVR.GetChannels",
                 "params": {
-                    "properties": ["title"],
-                    "playerid": 1
+                    "channelgroupid": "alltv"
                 },
-                "id": "Player.GetChannelBL"
+                "id": "PVR.GetChannelsBL"
             }));
         };
         setInterval(Autoupdate, 60000); <!-- Time in milliseconds -->
+        <!-- combined with css overflow: hidden and position: fixed to prevent scrolling on iOS -->
+        document.body.ontouchmove = function(e) {
+            e.preventDefault();
+        }
     </script>
 </body>
 

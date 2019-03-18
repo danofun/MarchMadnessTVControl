@@ -4,11 +4,10 @@ body, html {
      -moz-user-select: none;
      -ms-user-select: none;
      -webkit-tap-highlight-color: transparent;
-     -webkit-touch-callout: none;
      -webkit-text-size-adjust: none;
      -ms-text-size-adjust: none;
-     overflow: hidden;
-     touch-action: manipulation;
+	 overflow: hidden;
+     position: fixed;
 }
  .bg {
     /* The image used */
