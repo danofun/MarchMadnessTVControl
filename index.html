@@ -124,30 +124,29 @@
                     </table>
                 </div>
                 <div class="col-lg-6">
-                    <h2 id="UpcomingGamesTitle">UPCOMING GAMES</h2>
-                    <table class="table table-borderless text-black">
+                    <table class="table table-borderless text-white">
                         <thead>
-                            <tr>
+                            <tr id="BRlistenselect">
                                 <th id="hidelistenbar"></th>
                                 <th id="hidelistenbar"></th>
                             </tr>
                         </thead>
-                        <thead id="BRepg">
-                            <tr id="TLch1next">
-                                <th class="align-middle"><img class="img-fluid" id="TLch1nextimg"></th>
-                                <th class="align-middle h5" id="TLch1nextEPG"></th>
+                        <thead id="BRlisten">
+                            <tr id="BRch1now">
+                                <th class="align-middle"><img class="img-fluid" id="BRch1nowimg"></th>
+                                <th class="align-middle h5" id="BRch1nowEPG"></th>
                             </tr>
-                            <tr id="TLch2next">
-                                <th class="align-middle"><img class="img-fluid" id="TLch2nextimg"></th>
-                                <th class="align-middle h5" id="TLch2nextEPG"></th>
+                            <tr id="BRch2now">
+                                <th class="align-middle"><img class="img-fluid" id="BRch2nowimg"></th>
+                                <th class="align-middle h5" id="BRch2nowEPG"></th>
                             </tr>
-                            <tr id="TLch3next">
-                                <th class="align-middle"><img class="img-fluid" id="TLch3nextimg"></th>
-                                <th class="align-middle h5" id="TLch3nextEPG"></th>
+                            <tr id="BRch3now">
+                                <th class="align-middle"><img class="img-fluid" id="BRch3nowimg"></th>
+                                <th class="align-middle h5" id="BRch3nowEPG"></th>
                             </tr>
-                            <tr id="TLch4next">
-                                <th class="align-middle"><img class="img-fluid" id="TLch4nextimg"></th>
-                                <th class="align-middle h5" id="TLch4nextEPG"></th>
+                            <tr id="BRch4now">
+                                <th class="align-middle"><img class="img-fluid" id="BRch4nowimg"></th>
+                                <th class="align-middle h5" id="BRch4nowEPG"></th>
                             </tr>
                         </thead>
                     </table>
@@ -161,6 +160,7 @@
         var KodiTL = '10.0.64.10';
         var KodiTR = '10.0.64.11';
         var KodiBL = '10.0.64.12';
+        var KodiBR = '10.0.64.13';
 
         <!-- Kodi PVR Channels -->
         var PVRch1 = "CBS";
@@ -176,6 +176,7 @@
         var websocketTL = new WebSocket('ws://' + KodiTL + ':9090/jsonrpc');
         var websocketTR = new WebSocket('ws://' + KodiTR + ':9090/jsonrpc');
         var websocketBL = new WebSocket('ws://' + KodiBL + ':9090/jsonrpc');
+        var websocketBR = new WebSocket('ws://' + KodiBR + ':9090/jsonrpc');
 
         <!-- Open Top Left tv websocket connection -->
         websocketTL.onopen = function(event) {
@@ -230,31 +231,36 @@
                             <!-- set background color for the active channel and define global active channel variable -->
                         case "Player.GetActiveChannelTL":
                             var response = results.result.item.id;
-                            window.TLchactive = 0;
+                            window.TLchactiveid = 0;
+							window.TLchactivename = 0;
                             if (response === TLch1id) {
                                 $('#TLch1now').css('background-color', channelselectcolor)
                                 $('#TLch2now').css('background-color', 'transparent')
                                 $('#TLch3now').css('background-color', 'transparent')
                                 $('#TLch4now').css('background-color', 'transparent')
-                                window.TLchactive = TLch1id
+                                window.TLchactiveid = TLch1id;
+								window.TLchactivename = results.result.item.label
                             } else if (response === TLch2id) {
                                 $('#TLch1now').css('background-color', 'transparent')
                                 $('#TLch2now').css('background-color', channelselectcolor)
                                 $('#TLch3now').css('background-color', 'transparent')
                                 $('#TLch4now').css('background-color', 'transparent')
-                                window.TLchactive = TLch2id
+                                window.TLchactiveid = TLch2id;
+								window.TLchactivename = results.result.item.label
                             } else if (response === TLch3id) {
                                 $('#TLch1now').css('background-color', 'transparent')
                                 $('#TLch2now').css('background-color', 'transparent')
                                 $('#TLch3now').css('background-color', channelselectcolor)
                                 $('#TLch4now').css('background-color', 'transparent')
-                                window.TLchactive = TLch3id
+                                window.TLchactiveid = TLch3id;
+								window.TLchactivename = results.result.item.label
                             } else if (response === TLch4id) {
                                 $('#TLch1now').css('background-color', 'transparent')
                                 $('#TLch2now').css('background-color', 'transparent')
                                 $('#TLch3now').css('background-color', 'transparent')
                                 $('#TLch4now').css('background-color', channelselectcolor)
-                                window.TLchactive = TLch4id
+                                window.TLchactiveid = TLch4id;
+								window.TLchactivename = results.result.item.label
                             }
                             <!-- get the PVR channels EPG data and icon -->
                             websocketTL.send(JSON.stringify({
@@ -280,16 +286,10 @@
                             var localizetimenext = datetimeparsenext.setZone("local");
                             <!-- send the results to the specified table row -->
                             document.getElementById("TLch1nowimg").src = results.result.channeldetails.icon;
-                            document.getElementById("TLch1nextimg").src = results.result.channeldetails.icon;
                             if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
                                 document.getElementById("TLch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("TLch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
-                            }
-                            if (results.result.channeldetails.broadcastnext.title === "2019 NCAA Basketball Tournament") {
-                                document.getElementById("TLch1nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.episodename;
-                            } else {
-                                document.getElementById("TLch1nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.title;
                             }
                             websocketTL.send(JSON.stringify({
                                 "jsonrpc": "2.0",
@@ -311,16 +311,10 @@
                             });
                             var localizetimenext = datetimeparsenext.setZone("local");
                             document.getElementById("TLch2nowimg").src = results.result.channeldetails.icon;
-                            document.getElementById("TLch2nextimg").src = results.result.channeldetails.icon;
                             if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
                                 document.getElementById("TLch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("TLch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
-                            }
-                            if (results.result.channeldetails.broadcastnext.title === "2019 NCAA Basketball Tournament") {
-                                document.getElementById("TLch2nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.episodename;
-                            } else {
-                                document.getElementById("TLch2nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.title;
                             }
                             websocketTL.send(JSON.stringify({
                                 "jsonrpc": "2.0",
@@ -342,16 +336,10 @@
                             });
                             var localizetimenext = datetimeparsenext.setZone("local");
                             document.getElementById("TLch3nowimg").src = results.result.channeldetails.icon;
-                            document.getElementById("TLch3nextimg").src = results.result.channeldetails.icon;
                             if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
                                 document.getElementById("TLch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("TLch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
-                            }
-                            if (results.result.channeldetails.broadcastnext.title === "2019 NCAA Basketball Tournament") {
-                                document.getElementById("TLch3nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.episodename;
-                            } else {
-                                document.getElementById("TLch3nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.title;
                             }
                             websocketTL.send(JSON.stringify({
                                 "jsonrpc": "2.0",
@@ -373,16 +361,10 @@
                             });
                             var localizetimenext = datetimeparsenext.setZone("local");
                             document.getElementById("TLch4nowimg").src = results.result.channeldetails.icon;
-                            document.getElementById("TLch4nextimg").src = results.result.channeldetails.icon;
                             if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
                                 document.getElementById("TLch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("TLch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
-                            }
-                            if (results.result.channeldetails.broadcastnext.title === "2019 NCAA Basketball Tournament") {
-                                document.getElementById("TLch4nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.episodename;
-                            } else {
-                                document.getElementById("TLch4nextEPG").innerHTML = localizetimenext.toFormat('t') + ' ' + results.result.channeldetails.broadcastnext.title;
                             }
                             <!-- request volume information -->
                             websocketTL.send(JSON.stringify({
@@ -397,7 +379,7 @@
                         case "Application.VolumeTL":
                             var response = results.result.volume;
                             <!-- all tvs are muted -->
-                            if ((response === 0) && ($('#TRlistenselect').css('visibility') === 'visible') && ($('#BLlistenselect').css('visibility') === 'visible')) {
+                            if ((response === 0) && ($('#TRlistenselect').css('visibility') === 'visible') && ($('#BLlistenselect').css('visibility') === 'visible') && ($('#BRlistenselect').css('visibility') === 'visible')) {
                                 $('#TLlistenselect').css('visibility', 'visible')
                                 $('#TLlisten').css('border-color', 'transparent')
                                 $('#VolumeUp').css('visibility', 'hidden')
@@ -431,25 +413,29 @@
                                 $('#TLch2now').css('background-color', 'transparent')
                                 $('#TLch3now').css('background-color', 'transparent')
                                 $('#TLch4now').css('background-color', 'transparent')
-                                window.TLchactive = TLch1id
+                                window.TLchactiveid = TLch1id;
+								window.TLchactivename = results.params.data.item.title
                             } else if (notification === TLch2id) {
                                 $('#TLch1now').css('background-color', 'transparent')
                                 $('#TLch2now').css('background-color', channelselectcolor)
                                 $('#TLch3now').css('background-color', 'transparent')
                                 $('#TLch4now').css('background-color', 'transparent')
-                                window.TLchactive = TLch2id
+                                window.TLchactiveid = TLch2id;
+								window.TLchactivename = results.params.data.item.title
                             } else if (notification === TLch3id) {
                                 $('#TLch1now').css('background-color', 'transparent')
                                 $('#TLch2now').css('background-color', 'transparent')
                                 $('#TLch3now').css('background-color', channelselectcolor)
                                 $('#TLch4now').css('background-color', 'transparent')
-                                window.TLchactive = TLch3id
+                                window.TLchactiveid = TLch3id;
+								window.TLchactivename = results.params.data.item.title
                             } else if (notification === TLch4id) {
                                 $('#TLch1now').css('background-color', 'transparent')
                                 $('#TLch2now').css('background-color', 'transparent')
                                 $('#TLch3now').css('background-color', 'transparent')
                                 $('#TLch4now').css('background-color', channelselectcolor)
-                                window.TLchactive = TLch4id
+                                window.TLchactiveid = TLch4id;
+								window.TLchactivename = results.params.data.item.title
                             }
                             break;
                         case "Player.OnStop":
@@ -460,12 +446,14 @@
                                 $('#TLch2now').css('background-color', 'transparent')
                                 $('#TLch3now').css('background-color', 'transparent')
                                 $('#TLch4now').css('background-color', 'transparent')
+								window.TLchactiveid = 0;
+								window.TLchactivename = 0
                             }
                             break;
                             <!-- volume has changed -->
                         case "Application.OnVolumeChanged":
                             var notification = results.params.data.volume;
-                            if ((notification === 0) && ($('#TRlistenselect').css('visibility') === 'visible') && ($('#BLlistenselect').css('visibility') === 'visible')) { //are all tv's muted?
+                            if ((notification === 0) && ($('#TRlistenselect').css('visibility') === 'visible') && ($('#BLlistenselect').css('visibility') === 'visible') && ($('#BRlistenselect').css('visibility') === 'visible')) { //are all tv's muted?
                                 $('#TLlistenselect').css('visibility', 'visible')
                                 $('#TLlisten').css('border-color', 'transparent')
                                 $('#VolumeUp').css('visibility', 'hidden')
@@ -542,31 +530,36 @@
                             <!-- set background color for the active channel and define global active channel variable -->
                         case "Player.GetActiveChannelTR":
                             var response = results.result.item.id;
-                            window.TRchactive = 0;
+                            window.TRchactiveid = 0;
+							window.TRchactivename = 0;
                             if (response === TRch1id) {
                                 $('#TRch1now').css('background-color', channelselectcolor)
                                 $('#TRch2now').css('background-color', 'transparent')
                                 $('#TRch3now').css('background-color', 'transparent')
                                 $('#TRch4now').css('background-color', 'transparent')
-                                window.TRchactive = TRch1id
+                                window.TRchactiveid = TRch1id;
+								window.TRchactivename = results.result.item.label
                             } else if (response === TRch2id) {
                                 $('#TRch1now').css('background-color', 'transparent')
                                 $('#TRch2now').css('background-color', channelselectcolor)
                                 $('#TRch3now').css('background-color', 'transparent')
                                 $('#TRch4now').css('background-color', 'transparent')
-                                window.TRchactive = TRch2id
+                                window.TRchactiveid = TRch2id;
+								window.TRchactivename = results.result.item.label
                             } else if (response === TRch3id) {
                                 $('#TRch1now').css('background-color', 'transparent')
                                 $('#TRch2now').css('background-color', 'transparent')
                                 $('#TRch3now').css('background-color', channelselectcolor)
                                 $('#TRch4now').css('background-color', 'transparent')
-                                window.TRchactive = TRch3id
+                                window.TRchactiveid = TRch3id;
+								window.TRchactivename = results.result.item.label
                             } else if (response === TRch4id) {
                                 $('#TRch1now').css('background-color', 'transparent')
                                 $('#TRch2now').css('background-color', 'transparent')
                                 $('#TRch3now').css('background-color', 'transparent')
                                 $('#TRch4now').css('background-color', channelselectcolor)
-                                window.TRchactive = TRch4id
+                                window.TRchactiveid = TRch4id;
+								window.TRchactivename = results.result.item.label
                             }
                             <!-- get the PVR channels EPG data and icon -->
                             websocketTR.send(JSON.stringify({
@@ -669,7 +662,7 @@
                         case "Application.VolumeTR":
                             var response = results.result.volume;
                             <!-- all tvs are muted -->
-                            if ((response === 0) && ($('#TLlistenselect').css('visibility') === 'visible') && ($('#BLlistenselect').css('visibility') === 'visible')) {
+                            if ((response === 0) && ($('#TLlistenselect').css('visibility') === 'visible') && ($('#BLlistenselect').css('visibility') === 'visible') && ($('#BRlistenselect').css('visibility') === 'visible')) {
                                 $('#TRlistenselect').css('visibility', 'visible')
                                 $('#TRlisten').css('border-color', 'transparent')
                                 $('#VolumeUp').css('visibility', 'hidden')
@@ -703,25 +696,29 @@
                                 $('#TRch2now').css('background-color', 'transparent')
                                 $('#TRch3now').css('background-color', 'transparent')
                                 $('#TRch4now').css('background-color', 'transparent')
-                                window.TRchactive = TRch1id
+                                window.TRchactiveid = TRch1id;
+								window.TRchactivename = results.params.data.item.title
                             } else if (notification === TRch2id) {
                                 $('#TRch1now').css('background-color', 'transparent')
                                 $('#TRch2now').css('background-color', channelselectcolor)
                                 $('#TRch3now').css('background-color', 'transparent')
                                 $('#TRch4now').css('background-color', 'transparent')
-                                window.TRchactive = TRch2id
+                                window.TRchactiveid = TRch2id;
+								window.TRchactivename = results.params.data.item.title
                             } else if (notification === TRch3id) {
                                 $('#TRch1now').css('background-color', 'transparent')
                                 $('#TRch2now').css('background-color', 'transparent')
                                 $('#TRch3now').css('background-color', channelselectcolor)
                                 $('#TRch4now').css('background-color', 'transparent')
-                                window.TRchactive = TRch3id
+                                window.TRchactiveid = TRch3id;
+								window.TRchactivename = results.params.data.item.title
                             } else if (notification === TRch4id) {
                                 $('#TRch1now').css('background-color', 'transparent')
                                 $('#TRch2now').css('background-color', 'transparent')
                                 $('#TRch3now').css('background-color', 'transparent')
                                 $('#TRch4now').css('background-color', channelselectcolor)
-                                window.TRchactive = TRch4id
+                                window.TRchactiveid = TRch4id;
+								window.TRchactivename = results.params.data.item.title
                             }
                             break;
                             <!-- top right tv has been stopped -->
@@ -732,12 +729,15 @@
                                 $('#TRch2now').css('background-color', 'transparent')
                                 $('#TRch3now').css('background-color', 'transparent')
                                 $('#TRch4now').css('background-color', 'transparent')
+								window.TRchactiveid = 0;
+								window.TRchactivename = 0
+
                             }
                             break;
                             <!-- volume has changed -->
                         case "Application.OnVolumeChanged":
                             var notification = results.params.data.volume;
-                            if ((notification === 0) && ($('#TLlistenselect').css('visibility') === 'visible') && ($('#BLlistenselect').css('visibility') === 'visible')) {
+                            if ((notification === 0) && ($('#TLlistenselect').css('visibility') === 'visible') && ($('#BLlistenselect').css('visibility') === 'visible') && ($('#BRlistenselect').css('visibility') === 'visible')) {
                                 $('#TRlistenselect').css('visibility', 'visible')
                                 $('#TRlisten').css('border-color', 'transparent')
                                 $('#VolumeUp').css('visibility', 'hidden')
@@ -815,31 +815,36 @@
                             <!-- set background color for the active channel and define global active channel variable -->
                         case "Player.GetActiveChannelBL":
                             var response = results.result.item.id;
-                            window.BLchactive = 0;
+                            window.BLchactiveid = 0;
+							window.BLchactivename = 0;
                             if (response === BLch1id) {
                                 $('#BLch1now').css('background-color', channelselectcolor)
                                 $('#BLch2now').css('background-color', 'transparent')
                                 $('#BLch3now').css('background-color', 'transparent')
                                 $('#BLch4now').css('background-color', 'transparent')
-                                window.BLchactive = BLch1id
+                                window.BLchactiveid = BLch1id;
+								window.BLchactivename = results.result.item.label
                             } else if (response === BLch2id) {
                                 $('#BLch1now').css('background-color', 'transparent')
                                 $('#BLch2now').css('background-color', channelselectcolor)
                                 $('#BLch3now').css('background-color', 'transparent')
                                 $('#BLch4now').css('background-color', 'transparent')
-                                window.BLchactive = BLch2id
+                                window.BLchactiveid = BLch2id;
+								window.BLchactivename = results.result.item.label
                             } else if (response === BLch3id) {
                                 $('#BLch1now').css('background-color', 'transparent')
                                 $('#BLch2now').css('background-color', 'transparent')
                                 $('#BLch3now').css('background-color', channelselectcolor)
                                 $('#BLch4now').css('background-color', 'transparent')
-                                window.BLchactive = BLch3id
+                                window.BLchactiveid = BLch3id;
+								window.BLchactivename = results.result.item.label
                             } else if (response === BLch4id) {
                                 $('#BLch1now').css('background-color', 'transparent')
                                 $('#BLch2now').css('background-color', 'transparent')
                                 $('#BLch3now').css('background-color', 'transparent')
                                 $('#BLch4now').css('background-color', channelselectcolor)
-                                window.BLchactive = BLch4id
+                                window.BLchactiveid = BLch4id;
+								window.BLchactivename = results.result.item.label
                             }
                             <!-- get the PVR channels EPG data and icon -->
                             websocketBL.send(JSON.stringify({
@@ -942,7 +947,7 @@
                         case "Application.VolumeBL":
                             var response = results.result.volume;
                             <!-- all tvs are muted -->
-                            if ((response === 0) && ($('#TLlistenselect').css('visibility') === 'visible') && ($('#TRlistenselect').css('visibility') === 'visible')) {
+                            if ((response === 0) && ($('#TLlistenselect').css('visibility') === 'visible') && ($('#TRlistenselect').css('visibility') === 'visible') && ($('#BRlistenselect').css('visibility') === 'visible')) {
                                 $('#BLlistenselect').css('visibility', 'visible')
                                 $('#BLlisten').css('border-color', 'transparent')
                                 $('#VolumeUp').css('visibility', 'hidden')
@@ -976,25 +981,29 @@
                                 $('#BLch2now').css('background-color', 'transparent')
                                 $('#BLch3now').css('background-color', 'transparent')
                                 $('#BLch4now').css('background-color', 'transparent')
-                                window.BLchactive = BLch1id
+                                window.BLchactiveid = BLch1id;
+								window.BLchactivename = results.params.data.item.title
                             } else if (notification === BLch2id) {
                                 $('#BLch1now').css('background-color', 'transparent')
                                 $('#BLch2now').css('background-color', channelselectcolor)
                                 $('#BLch3now').css('background-color', 'transparent')
                                 $('#BLch4now').css('background-color', 'transparent')
-                                window.BLchactive = BLch2id
+                                window.BLchactiveid = BLch2id;
+								window.BLchactivename = results.params.data.item.title
                             } else if (notification === BLch3id) {
                                 $('#BLch1now').css('background-color', 'transparent')
                                 $('#BLch2now').css('background-color', 'transparent')
                                 $('#BLch3now').css('background-color', channelselectcolor)
                                 $('#BLch4now').css('background-color', 'transparent')
-                                window.BLchactive = BLch3id
+                                window.BLchactiveid = BLch3id;
+								window.BLchactivename = results.params.data.item.title
                             } else if (notification === BLch4id) {
                                 $('#BLch1now').css('background-color', 'transparent')
                                 $('#BLch2now').css('background-color', 'transparent')
                                 $('#BLch3now').css('background-color', 'transparent')
                                 $('#BLch4now').css('background-color', channelselectcolor)
-                                window.BLchactive = BLch4id
+                                window.BLchactiveid = BLch4id;
+								window.BLchactivename = results.params.data.item.title
                             }
                             break;
                         case "Player.OnStop":
@@ -1005,12 +1014,14 @@
                                 $('#BLch2now').css('background-color', 'transparent')
                                 $('#BLch3now').css('background-color', 'transparent')
                                 $('#BLch4now').css('background-color', 'transparent')
+								window.BLchactiveid = 0;
+								window.BLchactivename = 0
                             }
                             break;
                             <!-- volume has changed -->
                         case "Application.OnVolumeChanged":
                             var notification = results.params.data.volume;
-                            if ((notification === 0) && ($('#TLlistenselect').css('visibility') === 'visible') && ($('#TRlistenselect').css('visibility') === 'visible')) {
+                            if ((notification === 0) && ($('#TLlistenselect').css('visibility') === 'visible') && ($('#TRlistenselect').css('visibility') === 'visible') && ($('#BRlistenselect').css('visibility') === 'visible')) {
                                 $('#BLlistenselect').css('visibility', 'visible')
                                 $('#BLlisten').css('border-color', 'transparent')
                                 $('#VolumeUp').css('visibility', 'hidden')
@@ -1033,18 +1044,311 @@
                 }
             }
         };
-
+        // Open websocketBR connection
+        websocketBR.onopen = function(event) {
+            websocketBR.send(JSON.stringify({
+                "jsonrpc": "2.0",
+                "method": "PVR.GetChannels",
+                "params": {
+                    "channelgroupid": "alltv",
+                    "properties": ["uniqueid"]
+                },
+                "id": "PVR.GetChannelsBR"
+            }))
+            websocketBR.onmessage = function(event) {
+                var results = JSON.parse(event.data);
+                console.log(results);
+                if (results.id) {
+                    <!-- switch allows us to process results based on specific id -->
+                    <!-- process returned JSON results from initial request -->
+                    switch (results.id) {
+                        <!-- globally define the PVR channelids and names
+                        case "PVR.GetChannelsBR":
+                            var findchannel = $.grep(results.result.channels, function(element, index) {
+                                return element.label == PVRch1;
+                            });
+                            window.BRch1id = findchannel[0].channelid;
+                            window.BRch1name = findchannel[0].label;
+                            var findchannel = $.grep(results.result.channels, function(element, index) {
+                                return element.label == PVRch2;
+                            });
+                            window.BRch2id = findchannel[0].channelid;
+                            window.BRch2name = findchannel[0].label;
+                            var findchannel = $.grep(results.result.channels, function(element, index) {
+                                return element.label == PVRch3;
+                            });
+                            window.BRch3id = findchannel[0].channelid;
+                            window.BRch3name = findchannel[0].label;
+                            var findchannel = $.grep(results.result.channels, function(element, index) {
+                                return element.label == PVRch4;
+                            });
+                            window.BRch4id = findchannel[0].channelid;
+                            window.BRch4name = findchannel[0].label;
+                            <!-- identify which channel is active  -->
+                            websocketBR.send(JSON.stringify({
+                                "jsonrpc": "2.0",
+                                "method": "Player.GetItem",
+                                "params": {
+                                    "properties": ["title"],
+                                    "playerid": 1
+                                },
+                                "id": "Player.GetActiveChannelBR"
+                            }))
+                            break;
+                            <!-- set background color for the active channel and define global active channel variable -->
+                        case "Player.GetActiveChannelBR":
+                            var response = results.result.item.id;
+                            window.BRchactiveid = 0;
+							window.BRchactivename = 0;
+                            if (response === BRch1id) {
+                                $('#BRch1now').css('background-color', channelselectcolor)
+                                $('#BRch2now').css('background-color', 'transparent')
+                                $('#BRch3now').css('background-color', 'transparent')
+                                $('#BRch4now').css('background-color', 'transparent')
+                                window.BRchactiveid = BRch1id;
+								window.BRchactivename = results.result.item.label
+                            } else if (response === BRch2id) {
+                                $('#BRch1now').css('background-color', 'transparent')
+                                $('#BRch2now').css('background-color', channelselectcolor)
+                                $('#BRch3now').css('background-color', 'transparent')
+                                $('#BRch4now').css('background-color', 'transparent')
+                                window.BRchactiveid = BRch2id;
+								window.BRchactivename = results.result.item.label
+                            } else if (response === BRch3id) {
+                                $('#BRch1now').css('background-color', 'transparent')
+                                $('#BRch2now').css('background-color', 'transparent')
+                                $('#BRch3now').css('background-color', channelselectcolor)
+                                $('#BRch4now').css('background-color', 'transparent')
+                                window.BRchactiveid = BRch3id;
+								window.BRchactivename = results.result.item.label
+                            } else if (response === BRch4id) {
+                                $('#BRch1now').css('background-color', 'transparent')
+                                $('#BRch2now').css('background-color', 'transparent')
+                                $('#BRch3now').css('background-color', 'transparent')
+                                $('#BRch4now').css('background-color', channelselectcolor)
+                                window.BRchactiveid = BRch4id;
+								window.BRchactivename = results.result.item.label
+                            }
+                            <!-- get the PVR channels EPG data and icon -->
+                            websocketBR.send(JSON.stringify({
+                                "jsonrpc": "2.0",
+                                "method": "PVR.GetChannelDetails",
+                                "params": {
+                                    "channelid": BRch1id,
+                                    "properties": ["broadcastnow", "broadcastnext", "icon"]
+                                },
+                                "id": "PVR.GetChannelDetailsBRch1"
+                            }))
+                            break;
+                            <!-- tvheadend backend grabbing EPG using Schedules Direct JSON web services with SQLite DB -->
+                            <!-- EPG time provided is in format "YYYY-MM-DD HH:MM:SS". Time is GMT but is not properly formatted ISO 8601 format. Using luxon to add GMT zone to the retreived JSON data and then localized to the proper time zone so the correct time is displayed. -->
+                        case "PVR.GetChannelDetailsBRch1": // define the channel guide data 
+                            var datetimeparse = luxon.DateTime.fromSQL(results.result.channeldetails.broadcastnow.starttime, {
+                                zone: 'Etc/GMT'
+                            });
+                            var localizetime = datetimeparse.setZone("local");
+                            <!-- send the results to the specified table row -->
+                            document.getElementById("BRch1nowimg").src = results.result.channeldetails.icon;
+                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("BRch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
+                            } else {
+                                document.getElementById("BRch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            }
+                            websocketBR.send(JSON.stringify({
+                                "jsonrpc": "2.0",
+                                "method": "PVR.GetChannelDetails",
+                                "params": {
+                                    "channelid": BRch2id,
+                                    "properties": ["broadcastnow", "broadcastnext", "icon"]
+                                },
+                                "id": "PVR.GetChannelDetailsBRch2"
+                            }))
+                            break;
+                        case "PVR.GetChannelDetailsBRch2": // define the channel guide data 
+                            var datetimeparse = luxon.DateTime.fromSQL(results.result.channeldetails.broadcastnow.starttime, {
+                                zone: 'Etc/GMT'
+                            });
+                            var localizetime = datetimeparse.setZone("local");
+                            document.getElementById("BRch2nowimg").src = results.result.channeldetails.icon;
+                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("BRch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
+                            } else {
+                                document.getElementById("BRch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            }
+                            websocketBR.send(JSON.stringify({
+                                "jsonrpc": "2.0",
+                                "method": "PVR.GetChannelDetails",
+                                "params": {
+                                    "channelid": BRch3id,
+                                    "properties": ["broadcastnow", "broadcastnext", "icon"]
+                                },
+                                "id": "PVR.GetChannelDetailsBRch3"
+                            }))
+                            break;
+                        case "PVR.GetChannelDetailsBRch3": // define the channel guide data 
+                            var datetimeparse = luxon.DateTime.fromSQL(results.result.channeldetails.broadcastnow.starttime, {
+                                zone: 'Etc/GMT'
+                            });
+                            var localizetime = datetimeparse.setZone("local");
+                            document.getElementById("BRch3nowimg").src = results.result.channeldetails.icon;
+                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("BRch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
+                            } else {
+                                document.getElementById("BRch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            }
+                            websocketBR.send(JSON.stringify({
+                                "jsonrpc": "2.0",
+                                "method": "PVR.GetChannelDetails",
+                                "params": {
+                                    "channelid": BRch4id,
+                                    "properties": ["broadcastnow", "broadcastnext", "icon"]
+                                },
+                                "id": "PVR.GetChannelDetailsBRch4"
+                            }))
+                            break;
+                        case "PVR.GetChannelDetailsBRch4": // define the channel guide data 
+                            var datetimeparse = luxon.DateTime.fromSQL(results.result.channeldetails.broadcastnow.starttime, {
+                                zone: 'Etc/GMT'
+                            });
+                            var localizetime = datetimeparse.setZone("local");
+                            document.getElementById("BRch4nowimg").src = results.result.channeldetails.icon;
+                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                                document.getElementById("BRch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
+                            } else {
+                                document.getElementById("BRch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
+                            }
+                            <!-- request volume information -->
+                            websocketBR.send(JSON.stringify({
+                                "jsonrpc": "2.0",
+                                "method": "Application.GetProperties",
+                                "params": {
+                                    "properties": ["volume"]
+                                },
+                                "id": "Application.VolumeBR"
+                            }))
+                            break;
+                        case "Application.VolumeBR":
+                            var response = results.result.volume;
+                            <!-- all tvs are muted -->
+                            if ((response === 0) && ($('#TLlistenselect').css('visibility') === 'visible') && ($('#TRlistenselect').css('visibility') === 'visible') && ($('#BLlistenselect').css('visibility') === 'visible')) {
+                                $('#BRlistenselect').css('visibility', 'visible')
+                                $('#BRlisten').css('border-color', 'transparent')
+                                $('#VolumeUp').css('visibility', 'hidden')
+                                $('#VolumeDown').css('visibility', 'hidden')
+                                $('#MuteAllOutline').css('visibility', 'visible')
+                                window.BRvolume = response
+                                    <!-- bottom left tv is muted -->	
+                            } else if (response === 0) {
+                                $('#BRlistenselect').css('visibility', 'visible')
+                                $('#BRlisten').css('border-color', 'transparent')
+                                window.BRvolume = response
+                                    <!-- bottom left tv is not muted -->
+                            } else if (response != 0) {
+                                $('#BRlistenselect').css('visibility', 'hidden')
+                                $('#BRlisten').css('border-color', listenoutline)
+                                $('#VolumeUp').css('visibility', 'visible')
+                                $('#VolumeDown').css('visibility', 'visible')
+                                $('#MuteAllOutline').css('visibility', 'hidden')
+                                window.BRvolume = response
+                            }
+                        default:
+                    }
+                } else {
+                    <!-- process all JSON messages that are received without sending a requeste -->
+                    switch (results.method) {
+                        <!-- change in active channel -->
+                        case "Player.OnPlay":
+                            var notification = results.params.data.item.id;
+                            if (notification === BRch1id) {
+                                $('#BRch1now').css('background-color', channelselectcolor)
+                                $('#BRch2now').css('background-color', 'transparent')
+                                $('#BRch3now').css('background-color', 'transparent')
+                                $('#BRch4now').css('background-color', 'transparent')
+                                window.BRchactiveid = BRch1id;
+								window.BRchactivename = results.params.data.item.title
+                            } else if (notification === BRch2id) {
+                                $('#BRch1now').css('background-color', 'transparent')
+                                $('#BRch2now').css('background-color', channelselectcolor)
+                                $('#BRch3now').css('background-color', 'transparent')
+                                $('#BRch4now').css('background-color', 'transparent')
+                                window.BRchactiveid = BRch2id;
+								window.BRchactivename = results.params.data.item.title
+                            } else if (notification === BRch3id) {
+                                $('#BRch1now').css('background-color', 'transparent')
+                                $('#BRch2now').css('background-color', 'transparent')
+                                $('#BRch3now').css('background-color', channelselectcolor)
+                                $('#BRch4now').css('background-color', 'transparent')
+                                window.BRchactiveid = BRch3id;
+								window.BRchactivename = results.params.data.item.title
+                            } else if (notification === BRch4id) {
+                                $('#BRch1now').css('background-color', 'transparent')
+                                $('#BRch2now').css('background-color', 'transparent')
+                                $('#BRch3now').css('background-color', 'transparent')
+                                $('#BRch4now').css('background-color', channelselectcolor)
+                                window.BRchactiveid = BRch4id;
+								window.BRchactivename = results.params.data.item.title
+                            }
+                            break;
+                        case "Player.OnStop":
+                            var notification = results.method;
+                            <!-- bottom left tv has been stopped -->
+                            if (notification == "Player.OnStop") {
+                                $('#BRch1now').css('background-color', 'transparent')
+                                $('#BRch2now').css('background-color', 'transparent')
+                                $('#BRch3now').css('background-color', 'transparent')
+                                $('#BRch4now').css('background-color', 'transparent')
+								window.BRchactiveid = 0;
+								window.BRchactivename = 0
+                            }
+                            break;
+                            <!-- volume has changed -->
+                        case "Application.OnVolumeChanged":
+                            var notification = results.params.data.volume;
+                            if ((notification === 0) && ($('#TLlistenselect').css('visibility') === 'visible') && ($('#TRlistenselect').css('visibility') === 'visible') && ($('#BLlistenselect').css('visibility') === 'visible')) {
+                                $('#BRlistenselect').css('visibility', 'visible')
+                                $('#BRlisten').css('border-color', 'transparent')
+                                $('#VolumeUp').css('visibility', 'hidden')
+                                $('#VolumeDown').css('visibility', 'hidden')
+                                $('#MuteAllOutline').css('visibility', 'visible')
+                                window.BRvolume = notification
+                            } else if (notification === 0) {
+                                $('#BRlistenselect').css('visibility', 'visible')
+                                $('#BRlisten').css('border-color', 'transparent')
+                                window.BRvolume = notification
+                            } else if (notification != 0) {
+                                $('#BRlistenselect').css('visibility', 'hidden')
+                                $('#BRlisten').css('border-color', listenoutline)
+                                $('#VolumeUp').css('visibility', 'visible')
+                                $('#VolumeDown').css('visibility', 'visible')
+                                $('#MuteAllOutline').css('visibility', 'hidden')
+                                window.BRvolume = notification
+                            }
+                    }
+                }
+            }
+        };
         <!-- Top Left TV -->
         <!-- Top Left PVRch1  >
         $('#TLch1now').click(function() {
             <!-- if PRVch1 is active on top right tv swap channels -->
-            if (TLch1id === TRchactive) {
+            if (TLch1name === TRchactivename) {
+				if (TLchactivename === TRch1name) {
+					var swapchannel = TRch1id
+				} else if (TLchactivename === TRch2name) {
+					var swapchannel = TRch2id
+				} else if (TLchactivename === TRch3name) {
+					var swapchannel = TRch3id
+				} else if (TLchactivename === TRch4name) {
+					var swapchannel = TRch4id
+				} else {
+					var swapchannel = TRchactiveid
+				};
                 websocketTR.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": TLchactive
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayTRch"
@@ -1060,13 +1364,57 @@
                     "id": "PlayTLch1"
                 }));
                 <!-- if PRVch1 is active on bottom left tv swap channels -->
-            } else if (TLch1id === BLchactive) {
+            } else if (TLch1name === BLchactivename) {
+				if (TLchactivename === BLch1name) {
+					var swapchannel = BLch1id
+				} else if (TLchactivename === BLch2name) {
+					var swapchannel = BLch2id
+				} else if (TLchactivename === BLch3name) {
+					var swapchannel = BLch3id
+				} else if (TLchactivename === BLch4name) {
+					var swapchannel = BLch4id
+				} else {
+					var swapchannel = BLchactiveid
+				};
                 websocketBL.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": TLchactive
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayBLch"
+                }));
+                websocketTL.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": TLch1id
+                        }
+                    },
+                    "id": "PlayTLch1"
+                }));
+                <!-- if PRVch1 is active on bottom right tv swap channels --
+            } else if (TLch1name === BRchactivename) {
+				if (TLchactivename === BRch1name) {
+					var swapchannel = BRch1id
+				} else if (TLchactivename === BRch2name) {
+					var swapchannel = BRch2id
+				} else if (TLchactivename === BRch3name) {
+					var swapchannel = BRch3id
+				} else if (TLchactivename === BRch4name) {
+					var swapchannel = BRch4id
+				} else {
+					var swapchannel = BRchactiveid
+				};
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayBLch"
@@ -1098,13 +1446,24 @@
 
         <!-- Top Left PVRch2 -->
         $('#TLch2now').click(function() {
-            if (TLch2id === TRchactive) {
+            if (TLch2name === TRchactivename) {
+				if (TLchactivename === TRch1name) {
+					var swapchannel = TRch1id
+				} else if (TLchactivename === TRch2name) {
+					var swapchannel = TRch2id
+				} else if (TLchactivename === TRch3name) {
+					var swapchannel = TRch3id
+				} else if (TLchactivename === TRch4name) {
+					var swapchannel = TRch4id
+				} else {
+					var swapchannel = TRchactiveid
+				};
                 websocketTR.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": TLchactive
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayTRch"
@@ -1119,13 +1478,56 @@
                     },
                     "id": "PlayTLch2"
                 }));
-            } else if (TLch2id === BLchactive) {
+            } else if (TLch2name === BLchactivename) {
+				if (TLchactivename === BLch1name) {
+					var swapchannel = BLch1id
+				} else if (TLchactivename === BLch2name) {
+					var swapchannel = BLch2id
+				} else if (TLchactivename === BLch3name) {
+					var swapchannel = BLch3id
+				} else if (TLchactivename === BLch4name) {
+					var swapchannel = BLch4id
+				} else {
+					var swapchannel = BLchactiveid
+				};
                 websocketBL.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": TLchactive
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayBLch"
+                }));
+                websocketTL.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": TLch2id
+                        }
+                    },
+                    "id": "PlayTLch2"
+                }));
+            } else if (TLch2name === BRchactivename) {
+				if (TLchactivename === BRch1name) {
+					var swapchannel = BRch1id
+				} else if (TLchactivename === BRch2name) {
+					var swapchannel = BRch2id
+				} else if (TLchactivename === BRch3name) {
+					var swapchannel = BRch3id
+				} else if (TLchactivename === BRch4name) {
+					var swapchannel = BRch4id
+				} else {
+					var swapchannel = BRchactiveid
+				};
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayBLch"
@@ -1156,13 +1558,24 @@
 
         <!-- Top Left PVRch3 -->
         $('#TLch3now').click(function() {
-            if (TLch3id === TRchactive) {
+            if (TLch3name === TRchactivename) {
+				if (TLchactivename === TRch1name) {
+					var swapchannel = TRch1id
+				} else if (TLchactivename === TRch2name) {
+					var swapchannel = TRch2id
+				} else if (TLchactivename === TRch3name) {
+					var swapchannel = TRch3id
+				} else if (TLchactivename === TRch4name) {
+					var swapchannel = TRch4id
+				} else {
+					var swapchannel = TRchactiveid
+				};
                 websocketTR.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": TLchactive
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayTRch"
@@ -1177,13 +1590,56 @@
                     },
                     "id": "PlayTLch3"
                 }));
-            } else if (TLch3id === BLchactive) {
+            } else if (TLch3name === BLchactivename) {
+				if (TLchactivename === BLch1name) {
+					var swapchannel = BLch1id
+				} else if (TLchactivename === BLch2name) {
+					var swapchannel = BLch2id
+				} else if (TLchactivename === BLch3name) {
+					var swapchannel = BLch3id
+				} else if (TLchactivename === BLch4name) {
+					var swapchannel = BLch4id
+				} else {
+					var swapchannel = BLchactiveid
+				};
                 websocketBL.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": TLchactive
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayBLch"
+                }));
+                websocketTL.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": TLch3id
+                        }
+                    },
+                    "id": "PlayTLch3"
+                }));
+            } else if (TLch3name === BRchactivename) {
+				if (TLchactivename === BRch1name) {
+					var swapchannel = BRch1id
+				} else if (TLchactivename === BRch2name) {
+					var swapchannel = BRch2id
+				} else if (TLchactivename === BRch3name) {
+					var swapchannel = BRch3id
+				} else if (TLchactivename === BRch4name) {
+					var swapchannel = BRch4id
+				} else {
+					var swapchannel = BRchactiveid
+				};
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayBLch"
@@ -1213,13 +1669,24 @@
         });
         <!-- Top Left PVRch4 -->
         $('#TLch4now').click(function() {
-            if (TLch4id === TRchactive) {
+            if (TLch4name === TRchactivename) {
+				if (TLchactivename === TRch1name) {
+					var swapchannel = TRch1id
+				} else if (TLchactivename === TRch2name) {
+					var swapchannel = TRch2id
+				} else if (TLchactivename === TRch3name) {
+					var swapchannel = TRch3id
+				} else if (TLchactivename === TRch4name) {
+					var swapchannel = TRch4id
+				} else {
+					var swapchannel = TRchactiveid
+				};
                 websocketTR.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": TLchactive
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayTRch"
@@ -1234,13 +1701,56 @@
                     },
                     "id": "PlayTLch4"
                 }));
-            } else if (TLch4id === BLchactive) {
+            } else if (TLch4name === BLchactivename) {
+				if (TLchactivename === BLch1name) {
+					var swapchannel = BLch1id
+				} else if (TLchactivename === BLch2name) {
+					var swapchannel = BLch2id
+				} else if (TLchactivename === BLch3name) {
+					var swapchannel = BLch3id
+				} else if (TLchactivename === BLch4name) {
+					var swapchannel = BLch4id
+				} else {
+					var swapchannel = BLchactiveid
+				};
                 websocketBL.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": TLchactive
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayBLch"
+                }));
+                websocketTL.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": TLch4id
+                        }
+                    },
+                    "id": "PlayTLch4"
+                }));
+            } else if (TLch4name === BRchactivename) {
+				if (TLchactivename === BRch1name) {
+					var swapchannel = BRch1id
+				} else if (TLchactivename === BRch2name) {
+					var swapchannel = BRch2id
+				} else if (TLchactivename === BRch3name) {
+					var swapchannel = BRch3id
+				} else if (TLchactivename === BRch4name) {
+					var swapchannel = BRch4id
+				} else {
+					var swapchannel = BRchactiveid
+				};
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayBLch"
@@ -1295,18 +1805,37 @@
                 },
                 "id": "VolumeTL.BL"
             }));
+            websocketBR.send(JSON.stringify({
+                "jsonrpc": "2.0",
+                "method": "Application.SetVolume",
+                "params": {
+                    "volume": 0
+                },
+                "id": "VolumeTL.BR"
+            }));
         });
 
         <!-- Top Right TV -->
         <!-- Top Right PVRch1  >
         $('#TRch1now').click(function() {
-            if (TRch1id === TLchactive) {
+            if (TRch1name === TLchactivename) {
+				if (TRchactivename === TLch1name) {
+					var swapchannel = TLch1id
+				} else if (TRchactivename === TLch2name) {
+					var swapchannel = TLch2id
+				} else if (TRchactivename === TLch3name) {
+					var swapchannel = TLch3id
+				} else if (TRchactivename === TLch4name) {
+					var swapchannel = TLch4id
+				} else {
+					var swapchannel = TLchactiveid
+				};
                 websocketTL.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": TRchactive
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayTLch"
@@ -1321,13 +1850,56 @@
                     },
                     "id": "PlayTRch1"
                 }));
-            } else if (TRch1id === BLchactive) {
+            } else if (TRch1name === BLchactivename) {
+				if (TRchactivename === BLch1name) {
+					var swapchannel = BLch1id
+				} else if (TRchactivename === BLch2name) {
+					var swapchannel = BLch2id
+				} else if (TRchactivename === BLch3name) {
+					var swapchannel = BLch3id
+				} else if (TRchactivename === BLch4name) {
+					var swapchannel = BLch4id
+				} else {
+					var swapchannel = BLchactiveid
+				};
                 websocketBL.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": TRchactive
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayBLch"
+                }));
+                websocketTR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": TRch1id
+                        }
+                    },
+                    "id": "PlayTRch1"
+                }));
+            } else if (TRch1name === BRchactivename) {
+				if (TRchactivename === BRch1name) {
+					var swapchannel = BRch1id
+				} else if (TRchactivename === BRch2name) {
+					var swapchannel = BRch2id
+				} else if (TRchactivename === BRch3name) {
+					var swapchannel = BRch3id
+				} else if (TRchactivename === BRch4name) {
+					var swapchannel = BRch4id
+				} else {
+					var swapchannel = BRchactiveid
+				};
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayBLch"
@@ -1358,13 +1930,24 @@
 
         <!-- Top Right PVRch2 -->
         $('#TRch2now').click(function() {
-            if (TRch2id === TLchactive) {
+            if (TRch2name === TLchactivename) {
+				if (TRchactivename === TLch1name) {
+					var swapchannel = TLch1id
+				} else if (TRchactivename === TLch2name) {
+					var swapchannel = TLch2id
+				} else if (TRchactivename === TLch3name) {
+					var swapchannel = TLch3id
+				} else if (TRchactivename === TLch4name) {
+					var swapchannel = TLch4id
+				} else {
+					var swapchannel = TLchactiveid
+				};
                 websocketTL.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": TRchactive
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayTLch"
@@ -1379,13 +1962,56 @@
                     },
                     "id": "PlayTRch2"
                 }));
-            } else if (TRch2id === BLchactive) {
+            } else if (TRch2name === BLchactivename) {
+				if (TRchactivename === BLch1name) {
+					var swapchannel = BLch1id
+				} else if (TRchactivename === BLch2name) {
+					var swapchannel = BLch2id
+				} else if (TRchactivename === BLch3name) {
+					var swapchannel = BLch3id
+				} else if (TRchactivename === BLch4name) {
+					var swapchannel = BLch4id
+				} else {
+					var swapchannel = BLchactiveid
+				};
                 websocketBL.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": TRchactive
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayBLch"
+                }));
+                websocketTR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": TRch2id
+                        }
+                    },
+                    "id": "PlayTRch2"
+                }));
+            } else if (TRch2name === BRchactivename) {
+				if (TRchactivename === BRch1name) {
+					var swapchannel = BRch1id
+				} else if (TRchactivename === BRch2name) {
+					var swapchannel = BRch2id
+				} else if (TRchactivename === BRch3name) {
+					var swapchannel = BRch3id
+				} else if (TRchactivename === BRch4name) {
+					var swapchannel = BRch4id
+				} else {
+					var swapchannel = BRchactiveid
+				};
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayBLch"
@@ -1416,13 +2042,24 @@
 
         <!-- Top Right PVRch3 -->
         $('#TRch3now').click(function() {
-            if (TRch3id === TLchactive) {
+            if (TRch3name === TLchactivename) {
+				if (TRchactivename === TLch1name) {
+					var swapchannel = TLch1id
+				} else if (TRchactivename === TLch2name) {
+					var swapchannel = TLch2id
+				} else if (TRchactivename === TLch3name) {
+					var swapchannel = TLch3id
+				} else if (TRchactivename === TLch4name) {
+					var swapchannel = TLch4id
+				} else {
+					var swapchannel = TLchactiveid
+				};
                 websocketTL.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": TRchactive
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayTLch"
@@ -1437,13 +2074,56 @@
                     },
                     "id": "PlayTRch3"
                 }));
-            } else if (TRch3id === BLchactive) {
+            } else if (TRch3name === BLchactivename) {
+				if (TRchactivename === BLch1name) {
+					var swapchannel = BLch1id
+				} else if (TRchactivename === BLch2name) {
+					var swapchannel = BLch2id
+				} else if (TRchactivename === BLch3name) {
+					var swapchannel = BLch3id
+				} else if (TRchactivename === BLch4name) {
+					var swapchannel = BLch4id
+				} else {
+					var swapchannel = BLchactiveid
+				};
                 websocketBL.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": TRchactive
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayBLch"
+                }));
+                websocketTR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": TRch3id
+                        }
+                    },
+                    "id": "PlayTRch3"
+                }));
+            } else if (TRch3name === BRchactivename) {
+				if (TRchactivename === BRch1name) {
+					var swapchannel = BRch1id
+				} else if (TRchactivename === BRch2name) {
+					var swapchannel = BRch2id
+				} else if (TRchactivename === BRch3name) {
+					var swapchannel = BRch3id
+				} else if (TRchactivename === BRch4name) {
+					var swapchannel = BRch4id
+				} else {
+					var swapchannel = BRchactiveid
+				};
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayBLch"
@@ -1474,13 +2154,24 @@
 
         <!-- Top Right PVRch4 -->
         $('#TRch4now').click(function() {
-            if (TRch4id === TLchactive) {
+            if (TRch4name === TLchactivename) {
+				if (TRchactivename === TLch1name) {
+					var swapchannel = TLch1id
+				} else if (TRchactivename === TLch2name) {
+					var swapchannel = TLch2id
+				} else if (TRchactivename === TLch3name) {
+					var swapchannel = TLch3id
+				} else if (TRchactivename === TLch4name) {
+					var swapchannel = TLch4id
+				} else {
+					var swapchannel = TLchactiveid
+				};
                 websocketTL.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": TRchactive
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayTLch"
@@ -1495,13 +2186,56 @@
                     },
                     "id": "PlayTRch4"
                 }));
-            } else if (TRch4id === BLchactive) {
+            } else if (TRch4name === BLchactivename) {
+				if (TRchactivename === BLch1name) {
+					var swapchannel = BLch1id
+				} else if (TRchactivename === BLch2name) {
+					var swapchannel = BLch2id
+				} else if (TRchactivename === BLch3name) {
+					var swapchannel = BLch3id
+				} else if (TRchactivename === BLch4name) {
+					var swapchannel = BLch4id
+				} else {
+					var swapchannel = BLchactiveid
+				};
                 websocketBL.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": TRchactive
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayBLch"
+                }));
+                websocketTR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": TRch4id
+                        }
+                    },
+                    "id": "PlayTRch4"
+                }));
+            } else if (TRch4name === BRchactivename) {
+				if (TRchactivename === BRch1name) {
+					var swapchannel = BRch1id
+				} else if (TRchactivename === BRch2name) {
+					var swapchannel = BRch2id
+				} else if (TRchactivename === BRch3name) {
+					var swapchannel = BRch3id
+				} else if (TRchactivename === BRch4name) {
+					var swapchannel = BRch4id
+				} else {
+					var swapchannel = BRchactiveid
+				};
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayBLch"
@@ -1556,18 +2290,37 @@
                 },
                 "id": "VolumeTR.BL"
             }));
+            websocketBR.send(JSON.stringify({
+                "jsonrpc": "2.0",
+                "method": "Application.SetVolume",
+                "params": {
+                    "volume": 0
+                },
+                "id": "VolumeTR.BR"
+            }));
         });
 
         <!-- Bottom Left TV -->
         <!-- Bottom Left PVRch1  >
         $('#BLch1now').click(function() {
-            if (BLch1id === TLchactive) {
+            if (BLch1name === TLchactivename) {
+				if (BLchactivename === TLch1name) {
+					var swapchannel = TLch1id
+				} else if (BLchactivename === TLch2name) {
+					var swapchannel = TLch2id
+				} else if (BLchactivename === TLch3name) {
+					var swapchannel = TLch3id
+				} else if (BLchactivename === TLch4name) {
+					var swapchannel = TLch4id
+				} else {
+					var swapchannel = TLchactiveid
+				};
                 websocketTL.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": BLchactive
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayTLch"
@@ -1582,16 +2335,59 @@
                     },
                     "id": "PlayBLch1"
                 }));
-            } else if (BLch1id === TRchactive) {
+            } else if (BLch1name === TRchactivename) {
+				if (BLchactivename === TRch1name) {
+					var swapchannel = TRch1id
+				} else if (BLchactivename === TRch2name) {
+					var swapchannel = TRch2id
+				} else if (BLchactivename === TRch3name) {
+					var swapchannel = TRch3id
+				} else if (BLchactivename === TRch4name) {
+					var swapchannel = TRch4id
+				} else {
+					var swapchannel = TRchactiveid
+				};
                 websocketTR.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": BLchactive
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayTRch"
+                }));
+                websocketBL.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BLch1id
+                        }
+                    },
+                    "id": "PlayBLch1"
+                }));
+            } else if (BLch1name === BRchactivename) {
+				if (BLchactivename === BRch1name) {
+					var swapchannel = BRch1id
+				} else if (BLchactivename === BRch2name) {
+					var swapchannel = BRch2id
+				} else if (BLchactivename === BRch3name) {
+					var swapchannel = BRch3id
+				} else if (BLchactivename === BRch4name) {
+					var swapchannel = BRch4id
+				} else {
+					var swapchannel = BRchactiveid
+				};
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayBLch"
                 }));
                 websocketBL.send(JSON.stringify({
                     "jsonrpc": "2.0",
@@ -1619,13 +2415,24 @@
 
         <!-- Bottom Left PVRch2 -->
         $('#BLch2now').click(function() {
-            if (BLch2id === TLchactive) {
+            if (BLch2name === TLchactivename) {
+				if (BLchactivename === TLch1name) {
+					var swapchannel = TLch1id
+				} else if (BLchactivename === TLch2name) {
+					var swapchannel = TLch2id
+				} else if (BLchactivename === TLch3name) {
+					var swapchannel = TLch3id
+				} else if (BLchactivename === TLch4name) {
+					var swapchannel = TLch4id
+				} else {
+					var swapchannel = TLchactiveid
+				};
                 websocketTL.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": BLchactive
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayTLch"
@@ -1640,16 +2447,59 @@
                     },
                     "id": "PlayBLch2"
                 }));
-            } else if (BLch2id === TRchactive) {
+            } else if (BLch2name === TRchactivename) {
+				if (BLchactivename === TRch1name) {
+					var swapchannel = TRch1id
+				} else if (BLchactivename === TRch2name) {
+					var swapchannel = TRch2id
+				} else if (BLchactivename === TRch3name) {
+					var swapchannel = TRch3id
+				} else if (BLchactivename === TRch4name) {
+					var swapchannel = TRch4id
+				} else {
+					var swapchannel = TRchactiveid
+				};
                 websocketTR.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": BLchactive
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayTRch"
+                }));
+                websocketBL.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BLch2id
+                        }
+                    },
+                    "id": "PlayBLch2"
+                }));
+            } else if (BLch2name === BRchactivename) {
+				if (BLchactivename === BRch1name) {
+					var swapchannel = BRch1id
+				} else if (BLchactivename === BRch2name) {
+					var swapchannel = BRch2id
+				} else if (BLchactivename === BRch3name) {
+					var swapchannel = BRch3id
+				} else if (BLchactivename === BRch4name) {
+					var swapchannel = BRch4id
+				} else {
+					var swapchannel = BRchactiveid
+				};
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayBLch"
                 }));
                 websocketBL.send(JSON.stringify({
                     "jsonrpc": "2.0",
@@ -1677,13 +2527,24 @@
 
         <!-- Bottom Left PVRch3 -->
         $('#BLch3now').click(function() {
-            if (BLch3id === TLchactive) {
+            if (BLch3name === TLchactivename) {
+				if (BLchactivename === TLch1name) {
+					var swapchannel = TLch1id
+				} else if (BLchactivename === TLch2name) {
+					var swapchannel = TLch2id
+				} else if (BLchactivename === TLch3name) {
+					var swapchannel = TLch3id
+				} else if (BLchactivename === TLch4name) {
+					var swapchannel = TLch4id
+				} else {
+					var swapchannel = TLchactiveid
+				};
                 websocketTL.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": BLchactive
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayTLch"
@@ -1698,16 +2559,59 @@
                     },
                     "id": "PlayBLch3"
                 }));
-            } else if (BLch3id === TRchactive) {
+            } else if (BLch3name === TRchactivename) {
+				if (BLchactivename === TRch1name) {
+					var swapchannel = TRch1id
+				} else if (BLchactivename === TRch2name) {
+					var swapchannel = TRch2id
+				} else if (BLchactivename === TRch3name) {
+					var swapchannel = TRch3id
+				} else if (BLchactivename === TRch4name) {
+					var swapchannel = TRch4id
+				} else {
+					var swapchannel = TRchactiveid
+				};
                 websocketTR.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": BLchactive
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayTRch"
+                }));
+                websocketBL.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BLch3id
+                        }
+                    },
+                    "id": "PlayBLch3"
+                }));
+            } else if (BLch3name === BRchactivename) {
+				if (BLchactivename === BRch1name) {
+					var swapchannel = BRch1id
+				} else if (BLchactivename === BRch2name) {
+					var swapchannel = BRch2id
+				} else if (BLchactivename === BRch3name) {
+					var swapchannel = BRch3id
+				} else if (BLchactivename === BRch4name) {
+					var swapchannel = BRch4id
+				} else {
+					var swapchannel = BRchactiveid
+				};
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayBLch"
                 }));
                 websocketBL.send(JSON.stringify({
                     "jsonrpc": "2.0",
@@ -1735,13 +2639,24 @@
 
         <!-- Bottom Left PVRch4 -->
         $('#BLch4now').click(function() {
-            if (BLch4id === TLchactive) {
+            if (BLch4name === TLchactivename) {
+				if (BLchactivename === TLch1name) {
+					var swapchannel = TLch1id
+				} else if (BLchactivename === TLch2name) {
+					var swapchannel = TLch2id
+				} else if (BLchactivename === TLch3name) {
+					var swapchannel = TLch3id
+				} else if (BLchactivename === TLch4name) {
+					var swapchannel = TLch4id
+				} else {
+					var swapchannel = TLchactiveid
+				};
                 websocketTL.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": BLchactive
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayTLch"
@@ -1756,16 +2671,59 @@
                     },
                     "id": "PlayBLch4"
                 }));
-            } else if (BLch4id === TRchactive) {
+            } else if (BLch4name === TRchactivename) {
+				if (BLchactivename === TRch1name) {
+					var swapchannel = TRch1id
+				} else if (BLchactivename === TRch2name) {
+					var swapchannel = TRch2id
+				} else if (BLchactivename === TRch3name) {
+					var swapchannel = TRch3id
+				} else if (BLchactivename === TRch4name) {
+					var swapchannel = TRch4id
+				} else {
+					var swapchannel = TRchactiveid
+				};
                 websocketTR.send(JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": "Player.Open",
                     "params": {
                         "item": {
-                            "channelid": BLchactive
+                            "channelid": swapchannel
                         }
                     },
                     "id": "PlayTRch"
+                }));
+                websocketBL.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BLch4id
+                        }
+                    },
+                    "id": "PlayBLch4"
+                }));
+            } else if (BLch4name === BRchactivename) {
+				if (BLchactivename === BRch1name) {
+					var swapchannel = BRch1id
+				} else if (BLchactivename === BRch2name) {
+					var swapchannel = BRch2id
+				} else if (BLchactivename === BRch3name) {
+					var swapchannel = BRch3id
+				} else if (BLchactivename === BRch4name) {
+					var swapchannel = BRch4id
+				} else {
+					var swapchannel = BRchactiveid
+				};
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayBLch"
                 }));
                 websocketBL.send(JSON.stringify({
                     "jsonrpc": "2.0",
@@ -1817,6 +2775,499 @@
                 },
                 "id": "VolumeBL.BL"
             }));
+            websocketBR.send(JSON.stringify({
+                "jsonrpc": "2.0",
+                "method": "Application.SetVolume",
+                "params": {
+                    "volume": 0
+                },
+                "id": "VolumeBL.BR"
+            }));
+        });
+
+        <!-- Bottom Right TV -->
+        <!-- Bottom Right PVRch1  >
+        $('#BRch1now').click(function() {
+            if (BRch1name === TLchactivename) {
+				if (BRchactivename === TLch1name) {
+					var swapchannel = TLch1id
+				} else if (BRchactivename === TLch2name) {
+					var swapchannel = TLch2id
+				} else if (BRchactivename === TLch3name) {
+					var swapchannel = TLch3id
+				} else if (BRchactivename === TLch4name) {
+					var swapchannel = TLch4id
+				} else {
+					var swapchannel = TLchactiveid
+				};
+                websocketTL.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayTLch"
+                }));
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BRch1id
+                        }
+                    },
+                    "id": "PlayBRch1"
+                }));
+            } else if (BRch1name === TRchactivename) {
+				if (BRchactivename === TRch1name) {
+					var swapchannel = TRch1id
+				} else if (BRchactivename === TRch2name) {
+					var swapchannel = TRch2id
+				} else if (BRchactivename === TRch3name) {
+					var swapchannel = TRch3id
+				} else if (BRchactivename === TRch4name) {
+					var swapchannel = TRch4id
+				} else {
+					var swapchannel = TRchactiveid
+				};
+                websocketTR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayTRch"
+                }));
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BRch1id
+                        }
+                    },
+                    "id": "PlayBRch1"
+                }));
+            } else if (BRch1name === BLchactivename) {
+				if (BRchactivename === BLch1name) {
+					var swapchannel = BLch1id
+				} else if (BRchactivename === BLch2name) {
+					var swapchannel = BLch2id
+				} else if (BRchactivename === BLch3name) {
+					var swapchannel = BLch3id
+				} else if (BRchactivename === BLch4name) {
+					var swapchannel = BLch4id
+				} else {
+					var swapchannel = BLchactiveid
+				};
+                websocketBL.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayBLch"
+                }));
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BRch1id
+                        }
+                    },
+                    "id": "PlayBRch1"
+                }));
+            } else {
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BRch1id
+                        }
+                    },
+                    "id": "PlayBRch1"
+                }));
+            };
+        });
+
+        <!-- Bottom Right PVRch2 -->
+        $('#BRch2now').click(function() {
+            if (BRch2name === TLchactivename) {
+				if (BRchactivename === TLch1name) {
+					var swapchannel = TLch1id
+				} else if (BRchactivename === TLch2name) {
+					var swapchannel = TLch2id
+				} else if (BRchactivename === TLch3name) {
+					var swapchannel = TLch3id
+				} else if (BRchactivename === TLch4name) {
+					var swapchannel = TLch4id
+				} else {
+					var swapchannel = TLchactiveid
+				};
+                websocketTL.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayTLch"
+                }));
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BRch2id
+                        }
+                    },
+                    "id": "PlayBRch2"
+                }));
+            } else if (BRch2name === TRchactivename) {
+				if (BRchactivename === TRch1name) {
+					var swapchannel = TRch1id
+				} else if (BRchactivename === TRch2name) {
+					var swapchannel = TRch2id
+				} else if (BRchactivename === TRch3name) {
+					var swapchannel = TRch3id
+				} else if (BRchactivename === TRch4name) {
+					var swapchannel = TRch4id
+				} else {
+					var swapchannel = TRchactiveid
+				};
+                websocketTR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayTRch"
+                }));
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BRch2id
+                        }
+                    },
+                    "id": "PlayBRch2"
+                }));
+            } else if (BRch2name === BLchactivename) {
+				if (BRchactivename === BLch1name) {
+					var swapchannel = BLch1id
+				} else if (BRchactivename === BLch2name) {
+					var swapchannel = BLch2id
+				} else if (BRchactivename === BLch3name) {
+					var swapchannel = BLch3id
+				} else if (BRchactivename === BLch4name) {
+					var swapchannel = BLch4id
+				} else {
+					var swapchannel = BLchactiveid
+				};
+                websocketBL.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayBLch"
+                }));
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BRch2id
+                        }
+                    },
+                    "id": "PlayBRch2"
+                }));
+            } else {
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BRch2id
+                        }
+                    },
+                    "id": "PlayBRch2"
+                }));
+            };
+        });
+
+        <!-- Bottom Right PVRch3 -->
+        $('#BRch3now').click(function() {
+            if (BRch3name === TLchactivename) {
+				if (BRchactivename === TLch1name) {
+					var swapchannel = TLch1id
+				} else if (BRchactivename === TLch2name) {
+					var swapchannel = TLch2id
+				} else if (BRchactivename === TLch3name) {
+					var swapchannel = TLch3id
+				} else if (BRchactivename === TLch4name) {
+					var swapchannel = TLch4id
+				} else {
+					var swapchannel = TLchactiveid
+				};
+                websocketTL.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayTLch"
+                }));
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BRch3id
+                        }
+                    },
+                    "id": "PlayBRch3"
+                }));
+            } else if (BRch3name === TRchactivename) {
+				if (BRchactivename === TRch1name) {
+					var swapchannel = TRch1id
+				} else if (BRchactivename === TRch2name) {
+					var swapchannel = TRch2id
+				} else if (BRchactivename === TRch3name) {
+					var swapchannel = TRch3id
+				} else if (BRchactivename === TRch4name) {
+					var swapchannel = TRch4id
+				} else {
+					var swapchannel = TRchactiveid
+				};
+                websocketTR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayTRch"
+                }));
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BRch3id
+                        }
+                    },
+                    "id": "PlayBRch3"
+                }));
+            } else if (BRch3name === BLchactivename) {
+				if (BRchactivename === BLch1name) {
+					var swapchannel = BLch1id
+				} else if (BRchactivename === BLch2name) {
+					var swapchannel = BLch2id
+				} else if (BRchactivename === BLch3name) {
+					var swapchannel = BLch3id
+				} else if (BRchactivename === BLch4name) {
+					var swapchannel = BLch4id
+				} else {
+					var swapchannel = BLchactiveid
+				};
+                websocketBL.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayBLch"
+                }));
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BRch3id
+                        }
+                    },
+                    "id": "PlayBRch3"
+                }));
+            } else {
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BRch3id
+                        }
+                    },
+                    "id": "PlayBRch3"
+                }));
+            };
+        });
+
+        <!-- Bottom Right PVRch4 -->
+        $('#BRch4now').click(function() {
+            if (BRch4name === TLchactivename) {
+				if (BRchactivename === TLch1name) {
+					var swapchannel = TLch1id
+				} else if (BRchactivename === TLch2name) {
+					var swapchannel = TLch2id
+				} else if (BRchactivename === TLch3name) {
+					var swapchannel = TLch3id
+				} else if (BRchactivename === TLch4name) {
+					var swapchannel = TLch4id
+				} else {
+					var swapchannel = TLchactiveid
+				};
+                websocketTL.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayTLch"
+                }));
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BRch4id
+                        }
+                    },
+                    "id": "PlayBRch4"
+                }));
+            } else if (BRch4name === TRchactivename) {
+				if (BRchactivename === TRch1name) {
+					var swapchannel = TRch1id
+				} else if (BRchactivename === TRch2name) {
+					var swapchannel = TRch2id
+				} else if (BRchactivename === TRch3name) {
+					var swapchannel = TRch3id
+				} else if (BRchactivename === TRch4name) {
+					var swapchannel = TRch4id
+				} else {
+					var swapchannel = TRchactiveid
+				};
+                websocketTR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayTRch"
+                }));
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BRch4id
+                        }
+                    },
+                    "id": "PlayBRch4"
+                }));
+            } else if (BRch4name === BLchactivename) {
+				if (BRchactivename === BLch1name) {
+					var swapchannel = BLch1id
+				} else if (BRchactivename === BLch2name) {
+					var swapchannel = BLch2id
+				} else if (BRchactivename === BLch3name) {
+					var swapchannel = BLch3id
+				} else if (BRchactivename === BLch4name) {
+					var swapchannel = BLch4id
+				} else {
+					var swapchannel = BLchactiveid
+				};
+                websocketBL.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": swapchannel
+                        }
+                    },
+                    "id": "PlayBLch"
+                }));
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BRch4id
+                        }
+                    },
+                    "id": "PlayBRch4"
+                }));
+            } else {
+                websocketBR.send(JSON.stringify({
+                    "jsonrpc": "2.0",
+                    "method": "Player.Open",
+                    "params": {
+                        "item": {
+                            "channelid": BRch4id
+                        }
+                    },
+                    "id": "PlayBRch4"
+                }));
+            };
+        });
+
+        <!-- Bottom Right Listen -->
+        $('#BRlistenselect').click(function() {
+            websocketTL.send(JSON.stringify({
+                "jsonrpc": "2.0",
+                "method": "Application.SetVolume",
+                "params": {
+                    "volume": 0
+                },
+                "id": "VolumeBR.TL"
+            }));
+            websocketTR.send(JSON.stringify({
+                "jsonrpc": "2.0",
+                "method": "Application.SetVolume",
+                "params": {
+                    "volume": 0
+                },
+                "id": "VolumeBR.TR"
+            }));
+            websocketBL.send(JSON.stringify({
+                "jsonrpc": "2.0",
+                "method": "Application.SetVolume",
+                "params": {
+                    "volume": 0
+                },
+                "id": "VolumeBR.BL"
+            }));
+            websocketBR.send(JSON.stringify({
+                "jsonrpc": "2.0",
+                "method": "Application.SetVolume",
+                "params": {
+                    "volume": 75
+                },
+                "id": "VolumeBR.BR"
+            }));
         });
 
         <!-- Volume Up -->
@@ -1827,7 +3278,7 @@
             $('#VolumeUp').on('mousedown touchstart', function(e) {
                 $(this).addClass('active');
                 timeOut = setInterval(function() {
-                    if ((TLvolume != 0) && (TRvolume != 0) && (BLvolume != 0)) {
+                    if ((TLvolume != 0) && (TRvolume != 0) && (BLvolume != 0) && (BRvolume != 0)) {
                         websocketTL.send(JSON.stringify({
                             "jsonrpc": "2.0",
                             "method": "Application.SetVolume",
@@ -1851,6 +3302,14 @@
                                 "volume": "increment"
                             },
                             "id": "VolumeUp.BL"
+                        }))
+                        websocketBR.send(JSON.stringify({
+                            "jsonrpc": "2.0",
+                            "method": "Application.SetVolume",
+                            "params": {
+                                "volume": "increment"
+                            },
+                            "id": "VolumeUp.BR"
                         }))
                     } else if (TLvolume != 0) {
                         websocketTL.send(JSON.stringify({
@@ -1878,6 +3337,15 @@
                                 "volume": "increment"
                             },
                             "id": "VolumeUp.BL"
+                        }))
+                    } else if (BRvolume != 0) {
+                        websocketBR.send(JSON.stringify({
+                            "jsonrpc": "2.0",
+                            "method": "Application.SetVolume",
+                            "params": {
+                                "volume": "increment"
+                            },
+                            "id": "VolumeUp.BR"
                         }))
                     }
                 }, 100);
@@ -1895,7 +3363,7 @@
             $('#VolumeDown').on('mousedown touchstart', function(e) {
                 $(this).addClass('active');
                 timeOut = setInterval(function() {
-                    if ((TLvolume != 0) && (TRvolume != 0) && (BLvolume != 0)) {
+                    if ((TLvolume != 0) && (TRvolume != 0) && (BLvolume != 0) && (BRvolume != 0)) {
                         websocketTL.send(JSON.stringify({
                             "jsonrpc": "2.0",
                             "method": "Application.SetVolume",
@@ -1919,6 +3387,14 @@
                                 "volume": "decrement"
                             },
                             "id": "VolumeDown.BL"
+                        }))
+                        websocketBR.send(JSON.stringify({
+                            "jsonrpc": "2.0",
+                            "method": "Application.SetVolume",
+                            "params": {
+                                "volume": "decrement"
+                            },
+                            "id": "VolumeDown.BR"
                         }))
                     } else if (TLvolume != 0) {
                         websocketTL.send(JSON.stringify({
@@ -1947,6 +3423,15 @@
                             },
                             "id": "VolumeDown.BL"
                         }))
+                    } else if (BRvolume != 0) {
+                        websocketBR.send(JSON.stringify({
+                            "jsonrpc": "2.0",
+                            "method": "Application.SetVolume",
+                            "params": {
+                                "volume": "decrement"
+                            },
+                            "id": "VolumeDown.BR"
+                        }))
                     }
                 }, 100);
             }).bind('mouseup mouseleave touchend', function() {
@@ -1955,32 +3440,118 @@
             });
         });
 
-        <!-- Mute All  -->
-        $('#MuteAll').click(function() {
-            websocketTL.send(JSON.stringify({
-                "jsonrpc": "2.0",
-                "method": "Application.SetVolume",
-                "params": {
-                    "volume": 0
-                },
-                "id": "Mute.TL"
-            }));
-            websocketTR.send(JSON.stringify({
-                "jsonrpc": "2.0",
-                "method": "Application.SetVolume",
-                "params": {
-                    "volume": 0
-                },
-                "id": "Mute.TR"
-            }));
-            websocketBL.send(JSON.stringify({
-                "jsonrpc": "2.0",
-                "method": "Application.SetVolume",
-                "params": {
-                    "volume": 0
-                },
-                "id": "Mute.BL"
-            }));
+        <!-- Mute All and Stop All -->
+        $('#MuteAll').each(function() {
+		<!-- Stop All -->
+            var timeout, longtouch;
+            $(this).bind( "touchstart", function() {
+                timeout = setTimeout(function() {
+                    longtouch = true;
+                }, 1500);
+            }).bind( "touchend", function() {
+                if (longtouch) {
+                    websocketTL.send(JSON.stringify({
+                        "jsonrpc": "2.0",
+                        "method": "Player.Stop",
+                        "params": {
+                            "playerid": 1
+                        },
+                        "id": "Stop.TL"
+                    }));
+                    websocketTR.send(JSON.stringify({
+                        "jsonrpc": "2.0",
+                        "method": "Player.Stop",
+                        "params": {
+                            "playerid": 1
+                        },
+                        "id": "Stop.TR"
+                    }));
+                    websocketBL.send(JSON.stringify({
+                        "jsonrpc": "2.0",
+                        "method": "Player.Stop",
+                        "params": {
+                            "playerid": 1
+                        },
+                        "id": "Stop.BL"
+                    }));
+                    websocketBR.send(JSON.stringify({
+                        "jsonrpc": "2.0",
+                        "method": "Player.Stop",
+                        "params": {
+                            "playerid": 1
+                        },
+                        "id": "Stop.BR"
+                    }));
+                    websocketTL.send(JSON.stringify({
+                        "jsonrpc": "2.0",
+                        "method": "Application.SetVolume",
+                        "params": {
+                            "volume": 100
+                        },
+                        "id": "FullVolume.TL"
+                    }));
+                    websocketTR.send(JSON.stringify({
+                        "jsonrpc": "2.0",
+                        "method": "Application.SetVolume",
+                        "params": {
+                            "volume": 100
+                        },
+                        "id": "FullVolume.TR"
+                    }));
+                    websocketBL.send(JSON.stringify({
+                        "jsonrpc": "2.0",
+                        "method": "Application.SetVolume",
+                        "params": {
+                            "volume": 100
+                        },
+                        "id": "FullVolume.BL"
+                    }));
+                    websocketBR.send(JSON.stringify({
+                        "jsonrpc": "2.0",
+                        "method": "Application.SetVolume",
+                        "params": {
+                            "volume": 100
+                        },
+                        "id": "FullVolume.BR"
+                    }));
+				<!-- Mute All -->
+                } else {
+                    websocketTL.send(JSON.stringify({
+                        "jsonrpc": "2.0",
+                        "method": "Application.SetVolume",
+                        "params": {
+                            "volume": 0
+                        },
+                        "id": "Mute.TL"
+                    }));
+                    websocketTR.send(JSON.stringify({
+                        "jsonrpc": "2.0",
+                        "method": "Application.SetVolume",
+                        "params": {
+                            "volume": 0
+                        },
+                        "id": "Mute.TR"
+                    }));
+                    websocketBL.send(JSON.stringify({
+                        "jsonrpc": "2.0",
+                        "method": "Application.SetVolume",
+                        "params": {
+                            "volume": 0
+                        },
+                        "id": "Mute.BL"
+                    }));
+                    websocketBR.send(JSON.stringify({
+                        "jsonrpc": "2.0",
+                        "method": "Application.SetVolume",
+                        "params": {
+                            "volume": 0
+                        },
+                        "id": "Mute.BR"
+                    }));
+                }
+                longtouch = false;
+                clearTimeout(timeout);
+            });
         });
 
         <!-- Stop All -->
@@ -2009,6 +3580,14 @@
                 },
                 "id": "Stop.BL"
             }));
+            websocketBR.send(JSON.stringify({
+                "jsonrpc": "2.0",
+                "method": "Player.Stop",
+                "params": {
+                    "playerid": 1
+                },
+                "id": "Stop.BR"
+            }));
         });
 
         <!-- Set all tv volumes to 100 -->
@@ -2036,6 +3615,14 @@
                     "volume": 100
                 },
                 "id": "FullVolume.BL"
+            }));
+            websocketBR.send(JSON.stringify({
+                "jsonrpc": "2.0",
+                "method": "Application.SetVolume",
+                "params": {
+                    "volume": 100
+                },
+                "id": "FullVolume.BR"
             }));
         });
 
@@ -2070,12 +3657,21 @@
                 },
                 "id": "PVR.GetChannelsBL"
             }));
+            websocketBR.send(JSON.stringify({
+                "jsonrpc": "2.0",
+                "method": "PVR.GetChannels",
+                "params": {
+                    "channelgroupid": "alltv"
+                },
+                "id": "PVR.GetChannelsBR"
+            }));
         };
         setInterval(Autoupdate, 60000); <!-- Time in milliseconds -->
         <!-- combined with css overflow: hidden and position: fixed to prevent scrolling on iOS -->
         document.body.ontouchmove = function(e) {
             e.preventDefault();
         }
+		document.getElementById('MuteAll').draggable = false;
     </script>
 </body>
 

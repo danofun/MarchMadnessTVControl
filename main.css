@@ -43,14 +43,14 @@ body {
      color: black;
 }
 /* Table options */
- .table #TLlisten, .table #TRlisten, .table #BLlisten {
+ .table #TLlisten, .table #TRlisten, .table #BLlisten, .table #BRlisten {
      padding: 7px;
      border-style: solid;
      border-color: transparent;
      border-width: 7px;
      background-color: black;
 }
- .table #TLlistenselect, .table #TRlistenselect, .table #BLlistenselect {
+ .table #TLlistenselect, .table #TRlistenselect, .table #BLlistenselect, .table #BRlistenselect {
      background-color: #237A39;
      opacity: 0.4;
 }
@@ -75,11 +75,11 @@ body {
      width: 63px;
      opacity: 0.4;
 }
- .table #BRepg {
+ .table #TLepgnext {
      background-color: transparent;
      color: black;
 }
- .table #BRepg img {
+ .table #TLepgnext img {
      width: 63px;
      opacity: 1.0;
      filter: invert(100%);
