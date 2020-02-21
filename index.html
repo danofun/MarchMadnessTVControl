@@ -30,7 +30,7 @@
 
 <body>
     <div>
-        <img id="MuteAll" src="assets/img/2019_logo.svg"> <img id="MuteAllOutline" src="assets/img/2019_logo_outline.svg"> <img id="VolumeDown" src="assets/img/minus.svg"> <img id="VolumeUp" src="assets/img/plus.svg">
+        <img id="MuteAll" src="assets/img/2020_logo.svg"> <img id="MuteAllOutline" src="assets/img/2020_logo_outline.svg"> <img id="VolumeDown" src="assets/img/minus.svg"> <img id="VolumeUp" src="assets/img/plus.svg">
     </div>
     <div class="bg">
         <div class="container-fluid" id="ContainerTop">
@@ -164,13 +164,13 @@
 
         <!-- Kodi PVR Channels -->
         var PVRch1 = "CBS";
-        var PVRch2 = "TBS";
-        var PVRch3 = "TNT";
-        var PVRch4 = "truTV";
+        var PVRch2 = "TBS HD";
+        var PVRch3 = "TNT HD";
+        var PVRch4 = "tru TV HD";
 
         <!-- Color selections -->
         var channelselectcolor = '#3259B1';
-        var listenoutline = '#237A39';
+        var listenoutline = '#3259B1';
 
         <!-- Kodi websocket addresses -->
         var websocketTL = new WebSocket('ws://' + KodiTL + ':9090/jsonrpc');
@@ -286,7 +286,7 @@
                             var localizetimenext = datetimeparsenext.setZone("local");
                             <!-- send the results to the specified table row -->
                             document.getElementById("TLch1nowimg").src = results.result.channeldetails.icon;
-                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                            if (results.result.channeldetails.broadcastnow.title === "2020 NCAA Basketball Tournament") {
                                 document.getElementById("TLch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("TLch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
@@ -311,7 +311,7 @@
                             });
                             var localizetimenext = datetimeparsenext.setZone("local");
                             document.getElementById("TLch2nowimg").src = results.result.channeldetails.icon;
-                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                            if (results.result.channeldetails.broadcastnow.title === "2020 NCAA Basketball Tournament") {
                                 document.getElementById("TLch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("TLch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
@@ -336,7 +336,7 @@
                             });
                             var localizetimenext = datetimeparsenext.setZone("local");
                             document.getElementById("TLch3nowimg").src = results.result.channeldetails.icon;
-                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                            if (results.result.channeldetails.broadcastnow.title === "2020 NCAA Basketball Tournament") {
                                 document.getElementById("TLch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("TLch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
@@ -361,7 +361,7 @@
                             });
                             var localizetimenext = datetimeparsenext.setZone("local");
                             document.getElementById("TLch4nowimg").src = results.result.channeldetails.icon;
-                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                            if (results.result.channeldetails.broadcastnow.title === "2020 NCAA Basketball Tournament") {
                                 document.getElementById("TLch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("TLch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
@@ -581,7 +581,7 @@
                             var localizetime = datetimeparse.setZone("local");
                             <!-- send the results to the specified table row -->
                             document.getElementById("TRch1nowimg").src = results.result.channeldetails.icon;
-                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                            if (results.result.channeldetails.broadcastnow.title === "2020 NCAA Basketball Tournament") {
                                 document.getElementById("TRch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("TRch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
@@ -602,7 +602,7 @@
                             });
                             var localizetime = datetimeparse.setZone("local");
                             document.getElementById("TRch2nowimg").src = results.result.channeldetails.icon;
-                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                            if (results.result.channeldetails.broadcastnow.title === "2020 NCAA Basketball Tournament") {
                                 document.getElementById("TRch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("TRch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
@@ -623,7 +623,7 @@
                             });
                             var localizetime = datetimeparse.setZone("local");
                             document.getElementById("TRch3nowimg").src = results.result.channeldetails.icon;
-                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                            if (results.result.channeldetails.broadcastnow.title === "2020 NCAA Basketball Tournament") {
                                 document.getElementById("TRch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("TRch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
@@ -644,7 +644,7 @@
                             });
                             var localizetime = datetimeparse.setZone("local");
                             document.getElementById("TRch4nowimg").src = results.result.channeldetails.icon;
-                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                            if (results.result.channeldetails.broadcastnow.title === "2020 NCAA Basketball Tournament") {
                                 document.getElementById("TRch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("TRch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
@@ -866,7 +866,7 @@
                             var localizetime = datetimeparse.setZone("local");
                             <!-- send the results to the specified table row -->
                             document.getElementById("BLch1nowimg").src = results.result.channeldetails.icon;
-                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                            if (results.result.channeldetails.broadcastnow.title === "2020 NCAA Basketball Tournament") {
                                 document.getElementById("BLch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("BLch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
@@ -887,7 +887,7 @@
                             });
                             var localizetime = datetimeparse.setZone("local");
                             document.getElementById("BLch2nowimg").src = results.result.channeldetails.icon;
-                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                            if (results.result.channeldetails.broadcastnow.title === "2020 NCAA Basketball Tournament") {
                                 document.getElementById("BLch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("BLch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
@@ -908,7 +908,7 @@
                             });
                             var localizetime = datetimeparse.setZone("local");
                             document.getElementById("BLch3nowimg").src = results.result.channeldetails.icon;
-                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                            if (results.result.channeldetails.broadcastnow.title === "2020 NCAA Basketball Tournament") {
                                 document.getElementById("BLch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("BLch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
@@ -929,7 +929,7 @@
                             });
                             var localizetime = datetimeparse.setZone("local");
                             document.getElementById("BLch4nowimg").src = results.result.channeldetails.icon;
-                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                            if (results.result.channeldetails.broadcastnow.title === "2020 NCAA Basketball Tournament") {
                                 document.getElementById("BLch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("BLch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
@@ -1149,7 +1149,7 @@
                             var localizetime = datetimeparse.setZone("local");
                             <!-- send the results to the specified table row -->
                             document.getElementById("BRch1nowimg").src = results.result.channeldetails.icon;
-                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                            if (results.result.channeldetails.broadcastnow.title === "2020 NCAA Basketball Tournament") {
                                 document.getElementById("BRch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("BRch1nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
@@ -1170,7 +1170,7 @@
                             });
                             var localizetime = datetimeparse.setZone("local");
                             document.getElementById("BRch2nowimg").src = results.result.channeldetails.icon;
-                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                            if (results.result.channeldetails.broadcastnow.title === "2020 NCAA Basketball Tournament") {
                                 document.getElementById("BRch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("BRch2nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
@@ -1191,7 +1191,7 @@
                             });
                             var localizetime = datetimeparse.setZone("local");
                             document.getElementById("BRch3nowimg").src = results.result.channeldetails.icon;
-                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                            if (results.result.channeldetails.broadcastnow.title === "2020 NCAA Basketball Tournament") {
                                 document.getElementById("BRch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("BRch3nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
@@ -1212,7 +1212,7 @@
                             });
                             var localizetime = datetimeparse.setZone("local");
                             document.getElementById("BRch4nowimg").src = results.result.channeldetails.icon;
-                            if (results.result.channeldetails.broadcastnow.title === "2019 NCAA Basketball Tournament") {
+                            if (results.result.channeldetails.broadcastnow.title === "2020 NCAA Basketball Tournament") {
                                 document.getElementById("BRch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.episodename;
                             } else {
                                 document.getElementById("BRch4nowEPG").innerHTML = results.result.channeldetails.broadcastnow.title;
