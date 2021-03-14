@@ -88,18 +88,18 @@ body {
  #MuteAll {
      position: absolute;
      left: 50%;
-     top: 367px;
+     top: 375px;
      z-index: 65;
      transform: translate(-50%, -50%);
-     width:250px;
+     width:380px;
 }
  #MuteAllOutline {
      position: absolute;
      left: 50%;
-     top: 367px;
+     top: 375px;
      z-index: 64;
      transform: translate(-50%, -50%);
-     width:257px;
+     width:387px;
 }
  #VolumeDown {
      position: absolute;
